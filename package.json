@@ -4,6 +4,8 @@
   "description": "��#\u0000 \u0000c\u0000o\u0000m\u0000m\u0000i\u0000t\u0000-\u0000a\u0000i\u0000\r\u0000 \u0000",
   "main": "index.js",
   "scripts": {
+    "build": "tsc",
+    "start": "node dist/cli.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -14,7 +16,7 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.17.1",
-    "command": "^0.0.5",
+    "commander": "^12.1.0",
     "dotenv": "^16.4.5",
     "inquirer": "^10.1.8"
   }
