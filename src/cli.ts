@@ -1,8 +1,21 @@
 import { program } from "commander";
 import fs from "fs";
+import { exec } from "node:child_process";
 import * as dotenv from "dotenv";
 
 dotenv.config();
+
+const get_repositories_diff = (callback: (error: Error | null, stdout: string | null) => void) => {
+    exec("git diff", (error: any, stdout: any, stderr: any) => {
+        if (error) {
+            console.error(`exec error: ${error}`);
+            console.error(`stderr: ${stderr}`);
+            callback(error, null);
+            return;
+        }
+        callback(null, stdout);
+    });
+};
 
 const save_api_key = (api_key: string) => {
     const env_file_path = ".env";
