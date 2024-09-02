@@ -2,6 +2,7 @@ import { program } from "commander";
 import fs from "fs";
 import { exec } from "node:child_process";
 import * as dotenv from "dotenv";
+import { GenerativeAI } from "./generative-ai";
 
 dotenv.config();
 
@@ -33,8 +34,24 @@ program.command("add-key")
     .argument("<string>", "API key")
     .action((api_key: string) => {
         save_api_key(api_key);
-        
+
         console.log("API key saved successfully!");
     });
+
+program.command("commit")
+    .description("Generate a semantic commit")
+    .action(async () => {
+        get_repositories_diff(async (error, stdout) => {
+            if (error) {
+                console.error("Failed to get repository diff:", error);
+                return;
+            }
+            if (stdout) {
+                const result = await new GenerativeAI().run(stdout);
+                console.log(result);
+            }
+        });
+    });
+
 
 program.parse();
