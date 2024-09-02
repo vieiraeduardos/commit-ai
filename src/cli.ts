@@ -25,6 +25,12 @@ const save_api_key = (api_key: string) => {
     fs.writeFileSync(env_file_path, env_content);
 };
 
+const save_commit_message = (message: string) => {
+    const file_path = "commit_message.txt";
+    const content = message;
+    fs.writeFileSync(file_path, content);
+};
+
 program
     .name("Commit AI")
     .description("CLI for Commit AI")
@@ -52,6 +58,8 @@ program.command("commit")
 
                 const message = await new GenerativeAI().run(stdout);
 
+                save_commit_message(message);
+
                 console.log("Commit Message");
 
                 console.log("\n" + message + "\n");
@@ -62,9 +70,8 @@ program.command("commit")
                 });
 
                 if (answer) {
-                    const safe_message = message.replace(/"/g, '\\"');
 
-                    exec(`git add . && git commit -m "${safe_message}"`, (error: any, stdout: any, stderr: any) => {
+                    exec(`git add . && git commit -F commit_message.txt`, (error: any, stdout: any, stderr: any) => {
                         if (error) {
                             console.error(`exec error: ${error}`);
                             console.error(`stderr: ${stderr}`);
@@ -73,6 +80,7 @@ program.command("commit")
 
                         console.log("Message committed successfully!");
                     });
+
                 } else {
                     console.log("All good! You can make adjustments to the source code and try to generate another!");
                 }
