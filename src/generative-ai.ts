@@ -38,6 +38,8 @@ export class GenerativeAI {
                         parts: [
                             {
                                 text: `Você é um bot especializado em gerar mensagens de commit semânticas para repositórios de código. Seu objetivo é criar mensagens de commit claras e informativas, seguindo a convenção de commits semânticos. Cada mensagem deve incluir um tipo de commit, uma descrição concisa e, quando aplicável, detalhes adicionais sobre as mudanças. 
+                                Considerações:
+                                Não mostra o diff.
                                 Formato de Resposta: <tipo>: Breve descrição
                                          Corpo (Opcional)
                                          Rodapé (Opcional)

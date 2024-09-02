@@ -1,8 +1,9 @@
 import { program } from "commander";
 import fs from "fs";
-import { exec } from "node:child_process";
+import { exec } from "child_process";
 import * as dotenv from "dotenv";
 import { GenerativeAI } from "./generative-ai";
+import { confirm } from '@inquirer/prompts';
 
 dotenv.config();
 
@@ -47,11 +48,36 @@ program.command("commit")
                 return;
             }
             if (stdout) {
-                const result = await new GenerativeAI().run(stdout);
-                console.log(result);
+                console.log("We are generating the commit for a moment...");
+
+                const message = await new GenerativeAI().run(stdout);
+
+                console.log("Commit Message");
+
+                console.log("\n" + message + "\n");
+
+                const answer = await confirm({ 
+                    "message": "Use commit message?",
+                    "default": true, 
+                });
+
+                if (answer) {
+                    const safe_message = message.replace(/"/g, '\\"');
+
+                    exec(`git add . && git commit -m "${safe_message}"`, (error: any, stdout: any, stderr: any) => {
+                        if (error) {
+                            console.error(`exec error: ${error}`);
+                            console.error(`stderr: ${stderr}`);
+                            return;
+                        }
+
+                        console.log("Message committed successfully!");
+                    });
+                } else {
+                    console.log("All good! You can make adjustments to the source code and try to generate another!");
+                }
             }
         });
     });
-
 
 program.parse();
